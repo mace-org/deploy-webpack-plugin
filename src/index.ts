@@ -8,9 +8,10 @@ export type DeployWebpackPluginOptions = {
     warFile?: string
     contextPath?: string
 }
-const _name = 'deploy-webpack-plugin';
 
 export class DeployWebpackPlugin implements webpack.Plugin {
+
+    public static readonly pluginName = 'deploy-webpack-plugin';
 
     private readonly _opts: DeployWebpackPluginOptions;
 
@@ -34,23 +35,25 @@ export class DeployWebpackPlugin implements webpack.Plugin {
         }
 
         const filePath = path.join(compilation.compiler.outputPath, warFile);
-        if (!fs.existsSync(warFile)) {
+
+        /* istanbul ignore next */
+        if (!fs.existsSync(filePath)) {
             logger.error(`The war file “${warFile}” is not exists.`);
             return;
         }
 
         try {
             const tomcat = new Tomcat(this._opts.tomcat);
-            const result = await tomcat.deploy(warFile, this._opts.contextPath);
+            const result = await tomcat.deploy(filePath, this._opts.contextPath);
             logger.info('The war file “%s” deploy success: %s', warFile, result);
         } catch (e) {
-            logger.info('The war file “%s” deploy failed: %s', warFile, e);
+            logger.error('The war file “%s” deploy failed: %s', warFile, e);
         }
     }
 
     apply(compiler: webpack.Compiler): void {
-        compiler.hooks.afterEmit.tapAsync(_name, (compilation, callback) => {
-            const logger = compiler.getInfrastructureLogger(_name);
+        compiler.hooks.afterEmit.tapAsync(DeployWebpackPlugin.pluginName, (compilation, callback) => {
+            const logger = compiler.getInfrastructureLogger(DeployWebpackPlugin.pluginName);
             this.deploy(compilation, logger).then(() => callback());
         });
     }
