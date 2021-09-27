@@ -1,0 +1,26 @@
+{
+  "name": "deploy-webpack-plugin",
+  "version": "1.0.0",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "/lib"
+  ],
+  "repository": "https://github.com/mace-org/deploy-webpack-plugin.git",
+  "author": "mace <zhzjacky@163.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --coverage"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.2",
+    "@types/webpack": "4.41.26",
+    "archive-output-webpack-plugin": "^1.0.1",
+    "jest": "^27.2.2",
+    "tomcat-deployer": "^1.0.3",
+    "ts-jest": "^27.0.5",
+    "typescript": "^4.4.3",
+    "webpack": "4.44.1"
+  }
+}
