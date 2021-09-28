@@ -3,19 +3,19 @@ import * as path from 'path';
 import * as fs from 'fs';
 import {Tomcat, TomcatOptions} from 'tomcat-deployer';
 
-export type DeployWebpackPluginOptions = {
+export type TomcatDeployWebpackPluginOptions = {
     tomcat?: TomcatOptions,
     warFile?: string
     contextPath?: string
 }
 
-export class DeployWebpackPlugin implements webpack.Plugin {
+export class TomcatDeployWebpackPlugin implements webpack.Plugin {
 
-    public static readonly pluginName = 'deploy-webpack-plugin';
+    public static readonly pluginName = 'tomcat-deploy-webpack-plugin';
 
-    private readonly _opts: DeployWebpackPluginOptions;
+    private readonly _opts: TomcatDeployWebpackPluginOptions;
 
-    constructor(options: DeployWebpackPluginOptions = {}) {
+    constructor(options: TomcatDeployWebpackPluginOptions = {}) {
         this._opts = {...options};
     }
 
@@ -52,8 +52,8 @@ export class DeployWebpackPlugin implements webpack.Plugin {
     }
 
     apply(compiler: webpack.Compiler): void {
-        compiler.hooks.afterEmit.tapAsync(DeployWebpackPlugin.pluginName, (compilation, callback) => {
-            const logger = compiler.getInfrastructureLogger(DeployWebpackPlugin.pluginName);
+        compiler.hooks.afterEmit.tapAsync(TomcatDeployWebpackPlugin.pluginName, (compilation, callback) => {
+            const logger = compiler.getInfrastructureLogger(TomcatDeployWebpackPlugin.pluginName);
             this.deploy(compilation, logger).then(() => callback());
         });
     }

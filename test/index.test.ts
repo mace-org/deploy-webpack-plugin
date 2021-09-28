@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 import {ArchiveOutputWebpackPlugin} from 'archive-output-webpack-plugin';
-import {DeployWebpackPlugin, DeployWebpackPluginOptions} from '../src';
+import {TomcatDeployWebpackPlugin, TomcatDeployWebpackPluginOptions} from '../src';
 import * as deployer from 'tomcat-deployer';
 import {TomcatOptions} from 'tomcat-deployer';
 
@@ -25,7 +25,7 @@ function createCompiler(buildWar = false) {
     const getLogger = compiler.getInfrastructureLogger.bind(compiler);
     compiler.getInfrastructureLogger = jest.fn((name: string) => {
         const logger = getLogger(name);
-        if (name === DeployWebpackPlugin.pluginName) {
+        if (name === TomcatDeployWebpackPlugin.pluginName) {
             errorMock = jest.spyOn(logger, 'error');
             infoMock = jest.spyOn(logger, 'info');
         }
@@ -49,9 +49,9 @@ function runCompiler(compiler: webpack.Compiler) {
     });
 }
 
-function run(withWar = false, opts?: DeployWebpackPluginOptions) {
+function run(withWar = false, opts?: TomcatDeployWebpackPluginOptions) {
     const compiler = createCompiler(withWar);
-    const plugin = new DeployWebpackPlugin(opts);
+    const plugin = new TomcatDeployWebpackPlugin(opts);
     plugin.apply(compiler);
     return runCompiler(compiler);
 }
